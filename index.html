@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NIPIG: Neural Implicit Avatar Conditioned on Human Pose, Identity and Gender</title>
+  <meta name="description" content="Project page for NIPIG: Neural Implicit Avatar Conditioned on Human Pose, Identity and Gender.">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title is-2 has-text-centered">NIPIG: Neural Implicit Avatar Conditioned on Human Pose, Identity and Gender</h1>
+      
+<div class="has-text-centered authors">
+  <span class="author-block"><a href="https://orcid.org/0009-0002-2020-6551" target="_blank" rel="noopener">Guillaume Loranchet</a><sup>*†‡¶</sup></span>
+        <span class="author-block"><a href="https://orcid.org/0000-0003-3603-2381" target="_blank" rel="noopener">Pierre Hellier</a><sup>‡†§¶</sup></span>
+        <span class="author-block"><a href="https://orcid.org/0000-0003-0529-7598" target="_blank" rel="noopener">Adnane Boukhayma</a><sup>†‡§¶</sup></span>
+        <span class="author-block"><a href="https://orcid.org/0000-0002-3483-552X" target="_blank" rel="noopener">João Regateiro</a><sup>*</sup></span>
+        <span class="author-block"><a href="https://orcid.org/0000-0003-2690-0077" target="_blank" rel="noopener">Franck Multon</a><sup>†‡§¶</sup></span>
+</div>
+<div class="has-text-centered is-size-6 affiliations">
+  <span class="affil"><sup>*</sup> InterDigital</span> &nbsp;&nbsp; <span class="affil"><sup>†</sup> Inria</span> &nbsp;&nbsp; <span class="affil"><sup>‡</sup> University Rennes</span> &nbsp;&nbsp; <span class="affil"><sup>§</sup> CNRS</span> &nbsp;&nbsp; <span class="affil"><sup>¶</sup> IRISA</span>
+</div>
+
+      <div class="has-text-centered buttons is-centered" style="margin-top:1rem;">
+        <a class="button is-primary" href="assets/paper.pdf" target="_blank" rel="noopener">
+          <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper (PDF)</span>
+        </a>
+        <!-- <a class="button is-link" href="#" target="_blank" rel="noopener">
+          <span class="icon"><i class="fab fa-github"></i></span><span>Code (coming soon)</span>
+        </a> -->
+        <a class="button" href="#bibtex">
+          <span class="icon"><i class="fas fa-quote-right"></i></span><span>Citation</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract & Teaser -->
+<section class="section">
+  <div class="container">
+    <div class="columns is-vcentered">
+      <div class="column is-6">
+        <h2 class="title is-4">Abstract</h2>
+        <div class="content">
+          <p>The creation of realistic avatars in motion is a hot-topic in academia and the creative industries. Recent advances in deep learning and implicit representations have opened new avenues of research, especially to enhance the details of the avatars using implicit methods based on neural networks. State-of-the-art implicit Fast-SNARF methods encodes various poses of a given identity, but are specialized for that single identity. This paper proposes NIPIG, a method that extends Fast-SNARF model to handle multiple and novel identities. Our main contribution is to condition the model on identity and pose features, such as an identity code, a gender indicator, and a weight estimate. Extensive experiments led us to a compact model capable of interpolating and extrapolating between training identities. We test several conditioning techniques and network's sizes to find the best trade-off between parameter count and result quality. We also propose an efficient fine-tuning approach to handle new out-of-distribution identities, while avoiding decreasing the reconstruction performance for in-distribution identities.</p>
+        </div>
+      </div>
+      <div class="column is-6">
+        <h2 class="title is-4">Teaser Video</h2>
+        
+<div class="video-container">
+  <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:6px;">
+    <iframe src="https://www.youtube.com/embed/iEeQa2NuFwg" 
+            title="NIPIG teaser" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen 
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"></iframe>
+  </div>
+</div>
+
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="interactive">
+  <div class="container">
+    <h2 class="title is-4">Interactive Controls</h2>
+    <!-- <p class="content">Slide to interpolate identity and change pose. Replace the placeholder images in <code>assets/img/grid/</code> with your renders; filenames are <code>{identity}_{pose}.png</code>.</p> -->
+    <div class="box">
+      <div class="columns">
+        <div class="column is-5">
+          <figure class="image">
+            <img id="composite-view" src="assets/img/grid/id1_pose0_res.png" alt="Composite result">
+          </figure>
+          <!-- <p class="has-text-centered is-size-7" id="composite-caption">id1 • pose0</p> -->
+        </div>
+        <div class="column is-7">
+          <div class="field">
+            <label class="label">Identity interpolation</label>
+            <input id="identity-slider" class="nerfies-slider" type="range" min="0" max="8" step="1" value="0" list="identity-ticks">
+            <datalist id="identity-ticks">
+              <option value="0" label="id0"></option>
+              <option value="1" label="0.825"></option>
+              <option value="2" label="0.75"></option>
+              <option value="3" label="0.625"></option>
+              <option value="4" label="0.50"></option>
+              <option value="5" label="0.325"></option>
+              <option value="6" label="0.25"></option>
+              <option value="7" label="0.125"></option>
+              <option value="8" label="id1"></option>
+            </datalist>
+            <!-- <p class="help" id="identity-label">id1 (1.00·id1 + 0.00·id0)</p> -->
+          </div>
+          <div class="field" style="margin-top:1rem;">
+            <label class="label">Pose</label>
+            <input id="pose-slider" class="nerfies-slider" type="range" min="0" max="11" step="1" value="0" list="pose-ticks">
+            <datalist id="pose-ticks">
+              <option value="0" label="0"></option><option value="1" label="1"></option><option value="2" label="2"></option><option value="3" label="3"></option><option value="4" label="4"></option><option value="5" label="5"></option>
+              <option value="6" label="6"></option><option value="7" label="7"></option><option value="8" label="8"></option><option value="9" label="9"></option><option value="10" label="10"></option><option value="11" label="11"></option>
+            </datalist>
+          <div class="field" style="margin-top:1rem;">
+            <label class="checkbox">
+              <input id="error-toggle" type="checkbox">
+              Show error heatmap
+            </label>
+          </div>
+
+            <!-- <p class="help" id="pose-label">pose0</p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="method-overview">
+  <div class="container">
+    <h2 class="title is-4">Method Overview</h2>
+    <p class="content">NIPIG extends Fast‑SNARF with forward skinning in canonical space and an occupancy network conditioned on identity and pose. Given a posed query point, we iteratively find canonical correspondences via the LBS field (conditioned on identity), evaluate occupancy (conditioned on identity and pose), and reconstruct the surface. This decomposition keeps the representation compact while preserving fidelity on high‑frequency details (e.g., face, hands).</p>
+    <div class="columns is-multiline">
+      
+            <div class="column">
+              <figure class="image">
+                <img src="assets/img/figure_method_overview.png" alt="figure_method_overview.png placeholder">
+              </figure>
+              <!-- <p class="has-text-centered is-size-7">Place <code>figure_method_overview.png</code> — source: <strong>paper</strong>, Figure 1 (p.4).</p> -->
+            </div>
+            
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="finetune">
+  <div class="container">
+    <h2 class="title is-4">Teacher–Student Fine‑Tuning</h2>
+    <p class="content">To add a new out‑of‑distribution identity without catastrophic forgetting, we duplicate the model into a frozen teacher and a trainable student. The student is supervised by ground truth for the new identity and by the teacher’s predictions for prior identities. This allows fast adaptation (≈1k iters) while preserving performance on the original identities.</p>
+    <div class="columns is-multiline">
+      
+            <div class="column is-half">
+              <figure class="image">
+                <img src="assets/img/figure_finetune_teacher_student.jpg" alt="figure_finetune_teacher_student.jpg placeholder">
+              </figure>
+              <!-- <p class="has-text-centered is-size-7">Place <code>figure_finetune_teacher_student.jpg</code> — source: <strong>paper</strong>, Figure 3 (p.4).</p> -->
+            </div>
+            
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="pose-generalization">
+  <div class="container">
+    <h2 class="title is-4">Pose Generalization in Extreme Motions</h2>
+    <p class="content">NIPIG reposes identities robustly on sequences far from the training distribution (e.g., MPI PosePrior). The forward‑skinning field avoids the instability of inverse‑skinning approaches and yields clean surfaces without self‑intersection artifacts even under extreme joint rotations.</p>
+    <div class="columns is-multiline">
+      
+            <!-- <div class="column is-half">
+              <figure class="image">
+                <img src="assets/img/pose_generalization.gif" alt="pose_generalization.gif placeholder">
+              </figure>
+              <p class="has-text-centered is-size-7">Place <code>pose_generalization.gif</code> — source: <strong>video</strong>, Use a short loop from 01:17–01:56 (YouTube).</p>
+            </div> -->
+            
+            <div class="column is-half">
+              <figure class="image">
+                <img src="assets/img/figure_pose_extremes.png" alt="figure_pose_extremes.png placeholder">
+              </figure>
+              <!-- <p class="has-text-centered is-size-7">Place <code>figure_pose_extremes.png</code> — source: <strong>paper</strong>, Figure 5 (p.8).</p> -->
+            </div>
+            
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="sota-comparison">
+  <div class="container">
+    <h2 class="title is-4">Comparison to COAP and Fast‑SNARF</h2>
+    <p class="content">Qualitatively, NIPIG reduces part‑boundary seams typical of compositional models like COAP and produces sharper facial details than Fast‑SNARF—particularly visible with our higher‑density sampling near the face. The model remains compact while improving perceptual quality.</p>
+    <div class="columns is-multiline">
+      
+            <div class="column is-half">
+              <figure class="image">
+                <img src="assets/img/figure_sota_comparison.jpg" alt="figure_sota_comparison.jpg placeholder">
+              </figure>
+              <!-- <p class="has-text-centered is-size-7">Place <code>figure_sota_comparison.jpg</code> — source: <strong>paper</strong>, Figure 7 (p.8).</p> -->
+            </div>
+            
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="quantitative">
+  <div class="container">
+    <h2 class="title is-4">Quantitative Results & Model Size</h2>
+    <p class="content">Across seen and unseen settings, NIPIG matches or surpasses Fast‑SNARF and COAP on IoU and Chamfer while using substantially fewer parameters. The neutral‑gender single model also performs strongly with a footprint ∼0.52M params (base) or 0.13M (light).</p>
+    <div class="columns is-multiline">
+      
+            <div class="column">
+              <figure class="image">
+                <img src="assets/img/table1_quantitative.jpg" alt="table1_quantitative.jpg placeholder">
+              </figure>
+              <!-- <p class="has-text-centered is-size-7">Place <code>table1_quantitative.png</code> — source: <strong>paper</strong>, Table 1 (p.7).</p> -->
+            </div>
+            
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="fine-tuning-results">
+  <div class="container">
+    <h2 class="title is-4">Fine‑Tuning Results & Forgetting</h2>
+    <p class="content">Supervised teacher–student fine‑tuning mitigates forgetting on previously seen identities while retaining quality on the new identity. Freezing early occupancy layers and the LBS network cuts trainable parameters by >2× with minimal impact on Chamfer—practical for quick personalization.</p>
+    <div class="columns is-multiline">
+      
+            <div class="column">
+              <figure class="image">
+                <img src="assets/img/fine-tune.gif" alt="fine-tune.gif placeholder">
+              </figure>
+              <!-- <p class="has-text-centered is-size-7">Place <code>figure_finetune_curves.png</code> — source: <strong>supplementary</strong>, Figure 14 (supp., p.2).</p> -->
+            </div>
+            
+    </div>
+  </div>
+</section>
+</section>
+
+
+<!-- BibTeX -->
+<section class="section" id="bibtex">
+  <div class="container content">
+    <h2 class="title is-4">BibTeX</h2>
+    <pre>
+@inproceedings{nipig_cvmp25,
+  title={ NIPIG: Neural Implicit Avatar Conditioned on Human Pose, Identity and Gender },
+  author={ Guillaume Loranchet and Pierre Hellier and Adnane Boukhayma and João Regateiro and Franck Multon },
+  booktitle={CVMP 2025},
+  year={2025}
+}
+    </pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="content has-text-centered is-size-7">
+    <p>Template inspired by <em>nerfies.github.io</em>, and assisted with a LLM </p>
+  </div>
+</footer>
+
+<script>
+// Identity/Pose Selection
+const identityLevels = ['id0', 'id0825', 'id075', 'id0625', 'id050', 'id0325', 'id025', 'id0125', 'id1'];
+const identityPretty = ['id0', '0.825', '0.75', '0.625', '0.50', '0.325', '0.25', '0.125', 'id1'];
+const poseLevels = ['pose0', 'pose1', 'pose2', 'pose3', 'pose4', 'pose5','pose6', 'pose7', 'pose8', 'pose9', 'pose10', 'pose11'];
+
+const idSlider = document.getElementById('identity-slider');
+const poseSlider = document.getElementById('pose-slider');
+const composite = document.getElementById('composite-view');
+const errorToggle = document.getElementById('error-toggle');
+const compositeCaption = document.getElementById('composite-caption');
+const idLabel = document.getElementById('identity-label');
+const poseLabel = document.getElementById('pose-label');
+
+function updateComposite() {
+  const i = parseInt(idSlider.value, 10);
+  const p = parseInt(poseSlider.value, 10);
+  const iLab = identityLevels[i];
+  const pLab = poseLevels[p];
+  const mode = (errorToggle && errorToggle.checked) ? 'err' : 'res';
+  const path = `assets/img/grid/${iLab}_${pLab}_${mode}.png`;
+  composite.src = path;
+  compositeCaption.textContent = `${iLab} • ${pLab} • ${mode}`;
+  idLabel.textContent = identityPretty[i];
+  poseLabel.textContent = pLab;
+}
+
+idSlider.addEventListener('input', updateComposite);
+poseSlider.addEventListener('input', updateComposite);
+errorToggle && errorToggle.addEventListener('change', updateComposite);
+document.addEventListener('DOMContentLoaded', updateComposite);
+</script>
+</body>
+</html>

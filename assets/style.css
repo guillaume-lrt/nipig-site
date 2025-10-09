@@ -1,0 +1,58 @@
+
+:root { --max-content-width: 1080px; }
+.container { max-width: var(--max-content-width); }
+.hero { border-bottom: 1px solid #eee; }
+
+/* Authors */
+.authors .author-block { display: inline-block; margin: 0 0.4rem; font-size: 1.05rem; }
+.authors .author-block a { text-decoration: none; border-bottom: 1px dotted rgba(0,0,0,0.25); }
+.affiliations { margin-top: 0.25rem; color: #555; }
+.affiliations sup { margin-right: 2px; }
+
+/* Video */
+.video-container { position: relative; width: 100%; }
+.teaser-video { width: 100%; border-radius: 6px; }
+
+/* Nerfies-like sliders */
+.nerfies-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #ddd, #ddd);
+  outline: none;
+}
+.nerfies-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #3273dc;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+  cursor: pointer;
+  margin-top: -6px;
+}
+.nerfies-slider::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #3273dc; border: 2px solid white;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+.nerfies-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e5e5;
+}
+.nerfies-slider::-moz-range-track {
+  height: 4px; border-radius: 2px; background: #e5e5e5;
+}
+datalist option::before { content: attr(label); }
+
+.image img { border-radius: 6px; }
+
+/* Figure captions */
+.is-size-7 { color: #555; }
+
+/* Remove any grid/storyboard remnants (not used) */
+.grid, .grid-thumb, .video-scene-card {{ display: none; }}
