@@ -126,7 +126,7 @@
 <section class="section" id="method-overview">
   <div class="container">
     <h2 class="title is-4">Method Overview</h2>
-    <p class="content">NIPIG extends Fast‑SNARF with forward skinning in canonical space and an occupancy network conditioned on identity and pose. Given a posed query point, we iteratively find canonical correspondences via the LBS field (conditioned on identity), evaluate occupancy (conditioned on identity and pose), and reconstruct the surface. This decomposition keeps the representation compact while preserving fidelity on high‑frequency details (e.g., face, hands).</p>
+    <p class="content">NIPIG extends Fast-SNARF with forward skinning in canonical space and an occupancy network conditioned on identity and pose. Given a posed query point, we iteratively find canonical correspondences via the LBS field (conditioned on identity), evaluate occupancy (conditioned on identity and pose), and reconstruct the surface. The model can also be conditioned on other attributes such as a weight or gender parameter.</p>
     <div class="columns is-multiline">
       
             <div class="column">
@@ -143,8 +143,8 @@
 
 <section class="section" id="finetune">
   <div class="container">
-    <h2 class="title is-4">Teacher–Student Fine‑Tuning</h2>
-    <p class="content">To add a new out‑of‑distribution identity without catastrophic forgetting, we duplicate the model into a frozen teacher and a trainable student. The student is supervised by ground truth for the new identity and by the teacher’s predictions for prior identities. This allows fast adaptation (≈1k iters) while preserving performance on the original identities.</p>
+    <h2 class="title is-4">Teacher-Student Fine-Tuning</h2>
+    <p class="content">To add a new out-of-distribution identity without catastrophic forgetting, we duplicate the model into a frozen teacher and a trainable student. The student is supervised by ground truth for the new identity and by the teacher's predictions for prior identities. This allows fast adaptation (≈1k iterations) while preserving performance on the original identities.</p>
     <div class="columns is-multiline">
       
             <div class="column is-half">
@@ -162,14 +162,14 @@
 <section class="section" id="pose-generalization">
   <div class="container">
     <h2 class="title is-4">Pose Generalization in Extreme Motions</h2>
-    <p class="content">NIPIG reposes identities robustly on sequences far from the training distribution (e.g., MPI PosePrior). The forward‑skinning field avoids the instability of inverse‑skinning approaches and yields clean surfaces without self‑intersection artifacts even under extreme joint rotations.</p>
+    <p class="content">NIPIG reposes identities robustly on sequences far from the training distribution (e.g., MPI PosePrior). The forward-skinning field avoids the instability of inverse-skinning approaches and yields clean surfaces even for new identities (see image below).</p>
     <div class="columns is-multiline">
       
             <!-- <div class="column is-half">
               <figure class="image">
                 <img src="assets/img/pose_generalization.gif" alt="pose_generalization.gif placeholder">
               </figure>
-              <p class="has-text-centered is-size-7">Place <code>pose_generalization.gif</code> — source: <strong>video</strong>, Use a short loop from 01:17–01:56 (YouTube).</p>
+              <p class="has-text-centered is-size-7">Place <code>pose_generalization.gif</code> — source: <strong>video</strong>, Use a short loop from 01:17-01:56 (YouTube).</p>
             </div> -->
             
             <div class="column is-half">
@@ -186,8 +186,8 @@
 
 <section class="section" id="sota-comparison">
   <div class="container">
-    <h2 class="title is-4">Comparison to COAP and Fast‑SNARF</h2>
-    <p class="content">Qualitatively, NIPIG reduces part‑boundary seams typical of compositional models like COAP and produces sharper facial details than Fast‑SNARF—particularly visible with our higher‑density sampling near the face. The model remains compact while improving perceptual quality.</p>
+    <h2 class="title is-4">Comparison to COAP and Fast-SNARF</h2>
+    <p class="content">Qualitatively, NIPIG reduces part-boundary seams typical of compositional models like COAP and produces sharper facial details than Fast-SNARF—particularly due to our higher-density sampling near the face. The model is as compact as Fast-SNARF while representing many more identities.</p>
     <div class="columns is-multiline">
       
             <div class="column is-half">
@@ -205,7 +205,7 @@
 <section class="section" id="quantitative">
   <div class="container">
     <h2 class="title is-4">Quantitative Results & Model Size</h2>
-    <p class="content">Across seen and unseen settings, NIPIG matches or surpasses Fast‑SNARF and COAP on IoU and Chamfer while using substantially fewer parameters. The neutral‑gender single model also performs strongly with a footprint ∼0.52M params (base) or 0.13M (light).</p>
+    <p class="content">Across seen and unseen settings, NIPIG matches or surpasses Fast-SNARF and COAP on IoU and Chamfer while using substantially fewer parameters. The neutral-gender single model also performs strongly with a footprint ∼0.52M params (base) or 0.13M (light).</p>
     <div class="columns is-multiline">
       
             <div class="column">
@@ -222,8 +222,8 @@
 
 <section class="section" id="fine-tuning-results">
   <div class="container">
-    <h2 class="title is-4">Fine‑Tuning Results & Forgetting</h2>
-    <p class="content">Supervised teacher–student fine‑tuning mitigates forgetting on previously seen identities while retaining quality on the new identity. Freezing early occupancy layers and the LBS network cuts trainable parameters by >2× with minimal impact on Chamfer—practical for quick personalization.</p>
+    <h2 class="title is-4">Fine-Tuning Results & Forgetting</h2>
+    <p class="content">Supervised teacher-student fine-tuning mitigates forgetting on previously seen identities while retaining quality on the new identity. In both cases, the fine-tuning converges in a few hundred iterations. </p>
     <div class="columns is-multiline">
       
             <div class="column">
