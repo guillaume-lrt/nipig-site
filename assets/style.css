@@ -56,3 +56,190 @@ datalist option::before { content: attr(label); }
 
 /* Remove any grid/storyboard remnants (not used) */
 .grid, .grid-thumb, .video-scene-card {{ display: none; }}
+
+/* =========================
+   Base range reset + vars
+   ========================= */
+.js-slider {
+  --c-fill: #3273dc;      /* accent (left-of-thumb) */
+  --c-track: #e5e5e5;     /* unfilled track */
+  --c-thumb: #3273dc;     /* thumb color */
+  --c-thumb-border: #fff; /* thumb border */
+  --h: 4px;               /* track height */
+  --r: 2px;               /* track radius */
+  --thumb: 16px;          /* thumb size */
+  --val: 0;               /* % filled, set by JS */
+  --steps: 5;             /* segments (JS sets to max-min) */
+
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  outline: none;
+}
+
+/* WebKit track + fill via gradient */
+.js-slider::-webkit-slider-runnable-track {
+  height: var(--h);
+  border-radius: var(--r);
+  background:
+    linear-gradient(to right,
+      var(--c-fill) 0%,
+      var(--c-fill) calc(var(--val)*1%),
+      var(--c-track) calc(var(--val)*1%),
+      var(--c-track) 100%);
+}
+
+/* Firefox track (unfilled) + progress (filled) */
+.js-slider::-moz-range-track {
+  height: var(--h);
+  border-radius: var(--r);
+  background: var(--c-track);
+}
+.js-slider::-moz-range-progress {
+  height: var(--h);
+  border-radius: var(--r);
+  background: var(--c-fill);
+}
+
+/* Thumb (WebKit) */
+.js-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--thumb);
+  height: var(--thumb);
+  border-radius: 50%;
+  background: var(--c-thumb);
+  border: 2px solid var(--c-thumb-border);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.08);
+  margin-top: calc((var(--h) - var(--thumb)) / 2);
+  cursor: pointer;
+}
+
+/* Thumb (Firefox) */
+.js-slider::-moz-range-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  border-radius: 50%;
+  background: var(--c-thumb);
+  border: 2px solid var(--c-thumb-border);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.08);
+  cursor: pointer;
+}
+
+/* Focus ring */
+.js-slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(50,115,220,.2); }
+.js-slider:focus-visible::-moz-range-thumb     { box-shadow: 0 0 0 4px rgba(50,115,220,.2); }
+
+/* =========================
+   OPTION A: Classic (Nerfies+progress)
+   ========================= */
+.slider--classic { /* uses base variables */ }
+
+/* =========================
+   OPTION B: Segmented (discrete detents)
+   ========================= */
+.slider--segmented {
+  --h: 6px;
+  --r: 999px;
+}
+/* draw ticks on the track using repeating gradient; JS sets --steps */
+.slider--segmented::-webkit-slider-runnable-track {
+  background:
+    linear-gradient(to right,
+      var(--c-fill) 0%,
+      var(--c-fill) calc(var(--val)*1%),
+      var(--c-track) calc(var(--val)*1%),
+      var(--c-track) 100%),
+    repeating-linear-gradient(to right,
+      transparent 0,
+      transparent calc(100% / var(--steps)),
+      rgba(0,0,0,.10) calc(100% / var(--steps) + 1px),
+      transparent calc(100% / var(--steps) + 1px));
+}
+.slider--segmented::-moz-range-track {
+  background:
+    linear-gradient(var(--c-track), var(--c-track)),
+    repeating-linear-gradient(to right,
+      transparent 0,
+      transparent calc(100% / var(--steps)),
+      rgba(0,0,0,.10) calc(100% / var(--steps) + 1px),
+      transparent calc(100% / var(--steps) + 1px));
+  background-size: 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+.slider--segmented::-moz-range-progress {
+  background:
+    linear-gradient(var(--c-fill), var(--c-fill)),
+    repeating-linear-gradient(to right,
+      transparent 0,
+      transparent calc(100% / var(--steps)),
+      rgba(0,0,0,.10) calc(100% / var(--steps) + 1px),
+      transparent calc(100% / var(--steps) + 1px));
+  background-size: 100% 100%, 100% 100%;
+}
+
+/* slightly larger thumb */
+.slider--segmented { --thumb: 18px; }
+
+/* =========================
+   OPTION C: Glass/Glow
+   ========================= */
+.slider--glass {
+  --h: 8px;
+  --r: 999px;
+  --c-track: rgba(255,255,255,.45);
+  --c-fill: rgba(50,115,220,.8);
+}
+.slider--glass::-webkit-slider-runnable-track {
+  backdrop-filter: blur(6px);
+  background:
+    linear-gradient(to right,
+      var(--c-fill) 0%,
+      var(--c-fill) calc(var(--val)*1%),
+      rgba(255,255,255,.25) calc(var(--val)*1%),
+      rgba(255,255,255,.25) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 6px 16px rgba(0,0,0,.08);
+}
+.slider--glass::-moz-range-track {
+  background: rgba(255,255,255,.25);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 6px 16px rgba(0,0,0,.08);
+}
+.slider--glass::-moz-range-progress {
+  background: var(--c-fill);
+}
+.slider--glass::-webkit-slider-thumb,
+.slider--glass::-moz-range-thumb {
+  --c-thumb: #fff;
+  --c-thumb-border: rgba(0,0,0,.08);
+  box-shadow: 0 4px 18px rgba(50,115,220,.35), 0 0 0 1px rgba(0,0,0,.06) inset;
+}
+
+/* =========================
+   OPTION D: Compact Outline
+   ========================= */
+.slider--outline {
+  --h: 2px;
+  --thumb: 14px;
+  --c-fill: #222;
+  --c-track: #cfcfcf;
+  --c-thumb: #fff;
+  --c-thumb-border: #222;
+}
+.slider--outline::-webkit-slider-thumb,
+.slider--outline::-moz-range-thumb {
+  border-radius: 8px; /* squircle */
+}
+.slider--outline:focus-visible::-webkit-slider-thumb,
+.slider--outline:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px rgba(34,34,34,.15);
+}
+
+/* =========================
+   OPTION E: Dark (for dark sections)
+   ========================= */
+.slider--dark {
+  --c-fill: #8ab4ff;
+  --c-track: #333a45;
+  --c-thumb: #e8f0ff;
+  --c-thumb-border: #0b1a2e;
+}

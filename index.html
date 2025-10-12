@@ -10,6 +10,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
 </head>
 <body>
 
@@ -18,7 +24,10 @@
   <div class="hero-body">
     <div class="container">
       <h1 class="title is-2 has-text-centered">NIPIG: Neural Implicit Avatar Conditioned on Human Pose, Identity and Gender</h1>
-      
+      <!-- Conference name -->
+      <h2 class="subtitle is-4 has-text-centered" style="margin-top:-0.5rem; margin-bottom:0.75rem; font-weight:500;">
+        <em>Proceedings of CVMP&nbsp;2025, London, UK</em>
+      </h2>
 <div class="has-text-centered authors">
   <span class="author-block"><a href="https://orcid.org/0009-0002-2020-6551" target="_blank" rel="noopener">Guillaume Loranchet</a><sup>*†‡¶</sup></span>
         <span class="author-block"><a href="https://orcid.org/0000-0003-3603-2381" target="_blank" rel="noopener">Pierre Hellier</a><sup>‡†§¶</sup></span>
@@ -87,7 +96,11 @@
         <div class="column is-7">
           <div class="field">
             <label class="label">Identity interpolation</label>
-            <input id="identity-slider" class="nerfies-slider" type="range" min="0" max="8" step="1" value="0" list="identity-ticks">
+            <!-- pick one: classic | segmented | glass | outline | dark -->
+            <input id="identity-slider"
+              class="js-slider slider--segmented"
+              type="range" min="0" max="8" step="1" value="0">
+            <!-- <input id="identity-slider" class="nerfies-slider" type="range" min="0" max="8" step="1" value="0" list="identity-ticks"> -->
             <datalist id="identity-ticks">
               <option value="0" label="id0"></option>
               <option value="1" label="0.825"></option>
@@ -103,7 +116,11 @@
           </div>
           <div class="field" style="margin-top:1rem;">
             <label class="label">Pose</label>
-            <input id="pose-slider" class="nerfies-slider" type="range" min="0" max="11" step="1" value="0" list="pose-ticks">
+            <input id="pose-slider"
+            class="js-slider slider--segmented"
+            type="range" min="0" max="11" step="1" value="0">
+
+            <!-- <input id="pose-slider" class="nerfies-slider" type="range" min="0" max="11" step="1" value="0" list="pose-ticks"> -->
             <datalist id="pose-ticks">
               <option value="0" label="0"></option><option value="1" label="1"></option><option value="2" label="2"></option><option value="3" label="3"></option><option value="4" label="4"></option><option value="5" label="5"></option>
               <option value="6" label="6"></option><option value="7" label="7"></option><option value="8" label="8"></option><option value="9" label="9"></option><option value="10" label="10"></option><option value="11" label="11"></option>
@@ -140,6 +157,82 @@
   </div>
 </section>
 
+
+<!-- <section class="section" id="conditioning">
+  <div class="container">
+    <h2 class="title is-4">Conditioning techniques</h2>
+    <p class="content">Several techniques exist to condition the network. The first one, and the most straightforward, is to concatenante the conditioning parameters c and the output of layer l: x^l. The second option, FiLM, learns two linear layers that module the output of layer l. Finally, hypernetworks are commonly used to condition networks. The features matrices W and B are directly predicted from the conditioning parameters. However, although hypernetworks achieve the best quantitative results, they also double the total number of parameters used.</p>
+    <div class="columns is-multiline">
+      
+            <div class="column">
+              <figure class="image">
+                <img src="assets/img/conditioning.jpg" alt="conditioning.jpg placeholder">
+              </figure>
+            </div>
+            
+    </div>
+  </div>
+</section> -->
+
+<section class="section" id="conditioning">
+  <div class="container">
+    <h2 class="title is-4">Conditioning Techniques</h2>
+
+    <p class="content">
+      We review three standard mechanisms to condition a layer \(l\) with a code
+      \(c \in \mathbb{R}^{n_c}\). Let \(x^{(l)} \in \mathbb{R}^{n_l}\) be the input
+      activation and \(\sigma\) a nonlinearity. The output is \[ x^{(l+1)} = f^{(l)}(x) \quad \text{with} \quad
+          f^{(l)}(x) = \sigma\!\big(W\, x + B\big),
+        \]
+    </p>
+
+    <ul class="content">
+      <li>
+        <strong>Concatenation.</strong>
+        Augment the layer input with the conditioning code:
+        \(\tilde{x}^{(l)} = [\,x^{(l)}; c\,] \in \mathbb{R}^{\,n_l + n_c}\).
+        The layer becomes
+        \[
+          x^{(l+1)} = f^{(l)}(\tilde{x}^{(l)}) = \sigma\!\big(W\,\tilde{x}^{(l)} + B\big),
+          \quad W \in \mathbb{R}^{\,n_{l+1}\times (n_l + n_c)},\;
+          B \in \mathbb{R}^{\,n_{l+1}}.
+        \]
+      </li>
+
+      <li>
+        <strong>FiLM (Feature‑wise Linear Modulation).</strong>
+        Two learned projections of \(c\) produce a per‑feature gain and bias,
+        \(\gamma(c), \beta(c) \in \mathbb{R}^{\,n_{l}}\). The output of layer \(l\) becomes:
+        \[
+          x^{(l+1)} = f^{(l)}\big(\gamma(c) \odot x^{(l)} + \beta(c)\big),
+        \]
+        where \(\odot\) denotes element‑wise multiplication.
+      </li>
+
+      <li>
+        <strong>Hypernetworks.</strong>
+        A hypernetwork \(H^{(l)}\) maps the code to the actual layer parameters,
+        \(H^{(l)}(c) = \{\,W^{(l)}(c),\, B^{(l)}(c)\,\}\), with
+        \(W^{(l)}(c) \in \mathbb{R}^{\,n_{l+1}\times n_l}\) and
+        \(B^{(l)}(c) \in \mathbb{R}^{\,n_{l+1}}\).
+        The conditioned layer is
+        \[
+          f^{(l)}_c(x^{(l)}) = \sigma\!\big(W^{(l)}(c)\,x^{(l)} + B^{(l)}(c)\big).
+        \]
+        This approach often yields strong performance but typically increases
+        parameter count and memory usage compared with concatenation or FiLM.
+      </li>
+    </ul>
+
+    <div class="columns is-multiline">
+      <div class="column">
+        <figure class="image">
+          <img src="assets/img/conditioning.jpg" alt="conditioning.jpg placeholder">
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="section" id="finetune">
   <div class="container">
@@ -259,6 +352,24 @@
     <p>Template inspired by <em>nerfies.github.io</em>, and assisted with a LLM </p>
   </div>
 </footer>
+
+<script>
+(function () {
+  function setVars(el) {
+    const min  = +el.min || 0;
+    const max  = +el.max || 100;
+    const val  = +el.value;
+    const pct  = ((val - min) * 100) / (max - min);
+    const steps = (max - min) || 1;
+    el.style.setProperty('--val', pct);
+    el.style.setProperty('--steps', steps);
+  }
+  document.querySelectorAll('.js-slider').forEach(el => {
+    setVars(el);
+    el.addEventListener('input', () => setVars(el));
+  });
+})();
+</script>
 
 <script>
 // Identity/Pose Selection
